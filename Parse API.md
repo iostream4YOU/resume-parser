@@ -39,3 +39,45 @@ def parse_resume_with_api(file_path):
 # parsed_data = parse_resume_with_api("path/to/user_resume.pdf")
 # if parsed_data:
 #     print("✅ Successfully parsed the resume.")
+
+### Node.js :
+```javascript
+// Requires `node-fetch` and `form-data`
+import fetch from "node-fetch";
+import FormData from "form-data";
+import fs from "fs";
+
+async function parseResumeWithApi(filePath) {
+  const apiUrl = "https://resume-parser.base44.app/api/apps/68a7356f0285cfad28e93976/functions/parseResumeAPI";
+
+  const form = new FormData();
+  form.append("file", fs.createReadStream(filePath));
+  form.append("method", "ocr");
+
+  try {
+    const response = await fetch(apiUrl, { method: "POST", body: form });
+    const result = await response.json();
+
+    if (result.success) {
+      return result.data.parsed_data;
+    } else {
+      console.error(`API returned an error: ${result.error}`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Failed to call the API: ${error}`);
+    return null;
+  }
+}
+
+// Example Usage
+// const parsedData = await parseResumeWithApi("path/to/user_resume.pdf");
+// if (parsedData) {
+//   console.log("✅ Successfully parsed the resume.");
+// }
+
+###cURL :
+curl -X POST "https://resume-parser.base44.app/api/apps/68a7356f0285cfad28e93976/functions/parseResumeAPI" \
+  -H "api_key: 1509d055851f48b39d83b1252f15b343" \
+  -F "file=@resume.pdf" \
+  -F "method=ocr"
